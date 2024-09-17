@@ -45,6 +45,25 @@ TSubclassOf<ASmashCharacter> AMatchGameMode::GetSmashCharacterClassFromInputType
 	
 }
 
+void AMatchGameMode::SpawnCharacters(const TArray<AArenaPlayerStart*>& SpawnPoints)
+{
+	for (AArenaPlayerStart* SpawnPoint : SpawnPoints)
+	{
+		EAutoReceiveInput::Type inputType = SpawnPoint->AutoReceiveInput.GetValue();
+		TSubclassOf<ASmashCharacter> CharacterClass = GetSmashCharacterClassFromInputType(inputType);
+		if(CharacterClass == nullptr) continue;
+
+		ASmashCharacter* Character = GetWorld()->SpawnActorDeferred<ASmashCharacter>(CharacterClass, SpawnPoint->GetTransform());
+
+		if(Character == nullptr) continue;
+
+		Character->AutoPossessPlayer = SpawnPoint->AutoReceiveInput;
+		Character->FinishSpawning(SpawnPoint->GetTransform());
+
+		CharactersInsideArena.Add(Character);
+	}
+}
+
 
 void AMatchGameMode::BeginPlay()
 {
@@ -52,14 +71,5 @@ void AMatchGameMode::BeginPlay()
 
 	TArray<AArenaPlayerStart*> PlayerStartsPoints;
 	FindPlayerStartActorsInArena(PlayerStartsPoints);
-
-	for(AArenaPlayerStart* PlayerStartPoint : PlayerStartsPoints)
-	{
-		EAutoReceiveInput::Type inputType = PlayerStartPoint->AutoReceiveInput.GetValue();
-		TSubclassOf<ASmashCharacter> CharacterClass = GetSmashCharacterClassFromInputType(inputType);
-		if(CharacterClass == nullptr) continue;
-		
-		GEngine->AddOnScreenDebugMessage(-1,3.f,FColor::Red,CharacterClass->GetFName().ToString());
-	}
-	
+	SpawnCharacters(PlayerStartsPoints);
 }
