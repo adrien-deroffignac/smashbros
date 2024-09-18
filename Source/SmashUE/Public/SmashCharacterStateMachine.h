@@ -6,6 +6,8 @@
 #include "UObject/Object.h"
 #include "SmashCharacterStateMachine.generated.h"
 
+
+class USmashCharacterState;
 class ASmashCharacter;
 
 /**
@@ -25,5 +27,10 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<ASmashCharacter> Character;
-	
+
+	TArray<USmashCharacterState*> AllStates;
+
+	void FindStates();
+
+	void InitStates();
 };
