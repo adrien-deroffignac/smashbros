@@ -3,6 +3,8 @@
 
 #include "SmashCharacterStateWalk.h"
 
+#include "SmashCharacter.h"
+
 
 // Sets default values for this component's properties
 USmashCharacterStateWalk::USmashCharacterStateWalk()
@@ -42,22 +44,17 @@ ESmashCharacterStateID USmashCharacterStateWalk::GetStateID()
 void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Blue,
-		FString::Printf(TEXT("Enter StateWalk"))
-		);
+	Character->PlayAnimMontage(WalkAnim);
 }
 
 void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Red,
-		FString::Printf(TEXT("Enter StateExit"))
-		);
+	Character->StopAnimMontage(WalkAnim);
+}
+
+void USmashCharacterStateWalk::StateTick(float DeltaTime)
+{
+	Super::StateTick(DeltaTime);
 }
 

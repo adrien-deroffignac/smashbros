@@ -22,9 +22,14 @@ public:
 
 	virtual void StateExit(ESmashCharacterStateID NextStateID) override;
 
+	virtual void StateTick(float DeltaTime) override;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> IdleAnim;
 
 public:
 	// Called every frame

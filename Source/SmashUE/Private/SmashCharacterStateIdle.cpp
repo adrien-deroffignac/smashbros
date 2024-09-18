@@ -3,6 +3,8 @@
 
 #include "SmashCharacterStateIdle.h"
 
+#include "SmashCharacter.h"
+
 
 // Sets default values for this component's properties
 USmashCharacterStateIdle::USmashCharacterStateIdle()
@@ -42,23 +44,18 @@ ESmashCharacterStateID USmashCharacterStateIdle::GetStateID()
 void USmashCharacterStateIdle::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Blue,
-		FString::Printf(TEXT("Enter StateIdle"))
-		);
+	Character->PlayAnimMontage(IdleAnim);
 }
 
 void USmashCharacterStateIdle::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Red,
-		FString::Printf(TEXT("Exit StateIdle"))
-		);
+	Character->StopAnimMontage(IdleAnim);
+}
+
+void USmashCharacterStateIdle::StateTick(float DeltaTime)
+{
+	Super::StateTick(DeltaTime);
 }
 
 
