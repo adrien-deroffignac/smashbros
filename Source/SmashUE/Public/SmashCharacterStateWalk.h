@@ -4,19 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "SmashCharacterState.h"
-#include "SmashCharacterStateIdle.generated.h"
+#include "SmashCharacterStateWalk.generated.h"
 
 
 UCLASS(ClassGroup=(SmashCharacterState), meta=(BlueprintSpawnableComponent))
-class SMASHUE_API USmashCharacterStateIdle : public USmashCharacterState
+class SMASHUE_API USmashCharacterStateWalk : public USmashCharacterState
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	USmashCharacterStateIdle();
-
-	virtual ESmashCharacterStateID GetStateID() override;
+	USmashCharacterStateWalk();
 
 protected:
 	// Called when the game starts
@@ -26,4 +24,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+public:
+	virtual ESmashCharacterStateID GetStateID() override;
 };

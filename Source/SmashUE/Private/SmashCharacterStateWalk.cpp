@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SmashCharacterStateIdle.h"
+#include "SmashCharacterStateWalk.h"
 
 
 // Sets default values for this component's properties
-USmashCharacterStateIdle::USmashCharacterStateIdle()
+USmashCharacterStateWalk::USmashCharacterStateWalk()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -16,7 +16,7 @@ USmashCharacterStateIdle::USmashCharacterStateIdle()
 
 
 // Called when the game starts
-void USmashCharacterStateIdle::BeginPlay()
+void USmashCharacterStateWalk::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -26,7 +26,7 @@ void USmashCharacterStateIdle::BeginPlay()
 
 
 // Called every frame
-void USmashCharacterStateIdle::TickComponent(float DeltaTime, ELevelTick TickType,
+void USmashCharacterStateWalk::TickComponent(float DeltaTime, ELevelTick TickType,
                                              FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -34,7 +34,8 @@ void USmashCharacterStateIdle::TickComponent(float DeltaTime, ELevelTick TickTyp
 	// ...
 }
 
-ESmashCharacterStateID USmashCharacterStateIdle::GetStateID()
+ESmashCharacterStateID USmashCharacterStateWalk::GetStateID()
 {
-	return ESmashCharacterStateID::Idle;
+	return ESmashCharacterStateID::Walk;
 }
+
