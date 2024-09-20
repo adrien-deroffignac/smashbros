@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ArenaSettings.h"
 #include "GameFramework/GameModeBase.h"
 #include "MatchGameMode.generated.h"
 
 class ASmashCharacter;
 class AArenaPlayerStart;
+class UInputMappingContext;
+class USmashCharacterInputData;
 /**
  * 
  */
@@ -26,6 +29,13 @@ protected:
 
 
 private:
+	USmashCharacterInputData* LoadInputDataFromConfig();
+
+	UInputMappingContext* LoadInputMappingContextFromConfig();
+
+	
+
+	
 	void FindPlayerStartActorsInArena(TArray<AArenaPlayerStart*> &ResultsActors);
 
 	TSubclassOf<ASmashCharacter> GetSmashCharacterClassFromInputType(EAutoReceiveInput::Type inputType) const;

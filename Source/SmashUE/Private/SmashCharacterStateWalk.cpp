@@ -9,11 +9,7 @@
 // Sets default values for this component's properties
 USmashCharacterStateWalk::USmashCharacterStateWalk()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -21,9 +17,6 @@ USmashCharacterStateWalk::USmashCharacterStateWalk()
 void USmashCharacterStateWalk::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
 
@@ -33,7 +26,7 @@ void USmashCharacterStateWalk::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+
 }
 
 ESmashCharacterStateID USmashCharacterStateWalk::GetStateID()
@@ -45,16 +38,22 @@ void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID
 {
 	Super::StateEnter(PreviousStateID);
 	Character->PlayAnimMontage(WalkAnim);
+	bIsWalking = true;
 }
 
 void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 	Character->StopAnimMontage(WalkAnim);
+	Character->AddMovementInput(FVector::ForwardVector, 0.0f);
+	bIsWalking = false;
 }
 
 void USmashCharacterStateWalk::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
+	if(bIsWalking) {
+		Character->AddMovementInput(FVector::ForwardVector, WalkSpeed * DeltaTime);
+	}
 }
 

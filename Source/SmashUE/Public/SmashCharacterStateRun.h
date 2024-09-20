@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "SmashCharacterState.h"
-#include "SmashCharacterStateWalk.generated.h"
+#include "SmashCharacterStateRun.generated.h"
 
 
 UCLASS(ClassGroup=(SmashCharacterState), meta=(BlueprintSpawnableComponent))
-class SMASHUE_API USmashCharacterStateWalk : public USmashCharacterState
+class SMASHUE_API USmashCharacterStateRun : public USmashCharacterState
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	USmashCharacterStateWalk();
+	USmashCharacterStateRun();
 
 protected:
 	// Called when the game starts
@@ -35,11 +35,11 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAnimMontage> WalkAnim;
+	TObjectPtr<UAnimMontage> RunAnim;
 	
 	UPROPERTY(EditAnywhere)
-	float WalkSpeed = 250.0f;
+	float RunSpeed = 1000.0f;
 
 	UPROPERTY()
-	bool bIsWalking = false;
+	bool bIsRunning = false;
 };

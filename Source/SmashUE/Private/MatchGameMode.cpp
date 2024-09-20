@@ -9,6 +9,20 @@
 #include "Kismet/GameplayStatics.h"
 
 
+USmashCharacterInputData* AMatchGameMode::LoadInputDataFromConfig()
+{
+	const USmashCharacterSettings* CharacterSettings = GetDefault<USmashCharacterSettings>();
+	if(CharacterSettings == nullptr) return nullptr;
+	return CharacterSettings->InputData.LoadSynchronous();
+}
+
+UInputMappingContext* AMatchGameMode::LoadInputMappingContextFromConfig()
+{
+	const USmashCharacterSettings* CharacterSettings = GetDefault<USmashCharacterSettings>();
+	if(CharacterSettings == nullptr) return nullptr;
+	return CharacterSettings->InputMappingContext.LoadSynchronous();
+}
+
 void AMatchGameMode::FindPlayerStartActorsInArena(TArray<AArenaPlayerStart*> &ResultsActors)
 {
 	TArray<AActor*> FoundActors;
@@ -51,6 +65,10 @@ TSubclassOf<ASmashCharacter> AMatchGameMode::GetSmashCharacterClassFromInputType
 
 void AMatchGameMode::SpawnCharacters(const TArray<AArenaPlayerStart*>& SpawnPoints)
 {
+	USmashCharacterInputData* InputData = LoadInputDataFromConfig();
+	UInputMappingContext* InputMappingContext = LoadInputMappingContextFromConfig();
+
+	
 	for (AArenaPlayerStart* SpawnPoint : SpawnPoints)
 	{
 		EAutoReceiveInput::Type inputType = SpawnPoint->AutoReceiveInput.GetValue();
@@ -60,7 +78,8 @@ void AMatchGameMode::SpawnCharacters(const TArray<AArenaPlayerStart*>& SpawnPoin
 		ASmashCharacter* Character = GetWorld()->SpawnActorDeferred<ASmashCharacter>(CharacterClass, SpawnPoint->GetTransform());
 
 		if(Character == nullptr) continue;
-
+		Character->InputData = InputData;
+		Character->InputMappingContext = InputMappingContext;
 		Character->AutoPossessPlayer = SpawnPoint->AutoReceiveInput;
 		Character->SetOrientX(SpawnPoint->GetStartOrientX());
 		Character->FinishSpawning(SpawnPoint->GetTransform());
