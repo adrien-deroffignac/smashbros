@@ -44,7 +44,6 @@ void USmashCharacterStateRun::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
 	Character->PlayAnimMontage(RunAnim);
-	bIsRunning = true;
 }
 
 void USmashCharacterStateRun::StateExit(ESmashCharacterStateID NextStateID)
@@ -52,15 +51,11 @@ void USmashCharacterStateRun::StateExit(ESmashCharacterStateID NextStateID)
 	Super::StateExit(NextStateID);
 	Character->StopAnimMontage(RunAnim);
 	Character->AddMovementInput(FVector::ForwardVector, 0.0f);
-	bIsRunning = false;
 }
 
 void USmashCharacterStateRun::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	if(bIsRunning) {
-		Character->AddMovementInput(FVector::ForwardVector, RunSpeed * DeltaTime);
-	}
 }
 
 

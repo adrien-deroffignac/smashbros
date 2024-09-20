@@ -39,7 +39,5 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float WalkSpeed = 250.0f;
-
-	UPROPERTY()
-	bool bIsWalking = false;
+	
 };

@@ -10,6 +10,7 @@
 
 class USmashCharacterStateMachine;
 class USmashCharacterInputData;
+class UEnhancedInputComponent;
 
 UCLASS()
 class SMASHUE_API ASmashCharacter : public ACharacter
@@ -78,4 +79,21 @@ protected:
 
 	
 #pragma endregion Input Data / Mapping Context
+
+#pragma region Input Move X
+public:
+	float GetInputMoveX() const;
+
+
+
+protected:
+	UPROPERTY()
+	float InputMoveX = 0.f;
+
+private:
+	void BindInputMoveXAxisAndActions(UEnhancedInputComponent* EnhancedInputComponent);
+
+	void OnInputMoveX(const FInputActionValue& InputActionValue);
+	
+#pragma endregion Input Move X
 };

@@ -4,6 +4,7 @@
 #include "SmashCharacterStateWalk.h"
 
 #include "SmashCharacter.h"
+#include "SmashCharacterStateMachine.h"
 
 
 // Sets default values for this component's properties
@@ -25,8 +26,6 @@ void USmashCharacterStateWalk::TickComponent(float DeltaTime, ELevelTick TickTyp
                                              FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-
 }
 
 ESmashCharacterStateID USmashCharacterStateWalk::GetStateID()
@@ -38,22 +37,28 @@ void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID
 {
 	Super::StateEnter(PreviousStateID);
 	Character->PlayAnimMontage(WalkAnim);
-	bIsWalking = true;
 }
 
 void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 	Character->StopAnimMontage(WalkAnim);
-	Character->AddMovementInput(FVector::ForwardVector, 0.0f);
-	bIsWalking = false;
+	
 }
 
 void USmashCharacterStateWalk::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	if(bIsWalking) {
-		Character->AddMovementInput(FVector::ForwardVector, WalkSpeed * DeltaTime);
+	
+	if(FMath::Abs(Character->GetInputMoveX()) < 0.1f)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
+	}
+	else
+	{
+		
+		Character->SetOrientX(Character->GetInputMoveX());
+		Character->AddMovementInput(FVector::ForwardVector, Character->GetOrientX());
 	}
 }
 

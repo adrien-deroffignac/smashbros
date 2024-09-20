@@ -39,7 +39,5 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float RunSpeed = 1000.0f;
-
-	UPROPERTY()
-	bool bIsRunning = false;
+	
 };
