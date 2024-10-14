@@ -73,7 +73,7 @@ void ASmashCharacter::TickStateMachine(float DeltaTime) const
 
 void ASmashCharacter::SetupMappingContextIntoController() const
 {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	APlayerController* PlayerController = Cast<APlayerController>(Controller);
 	if(PlayerController == nullptr) return;
 
 	ULocalPlayer* Player = PlayerController->GetLocalPlayer();
