@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ArenaSettings.h"
 
-#include "ULocalMultiplayerSettings.generated.h"
+#include "LocalMultiplayerSettings.generated.h"
 
 /**
  * 
@@ -42,7 +42,7 @@ struct FLocalMultiplayerProfileData
 
 
 UCLASS(Config =Game, DefaultConfig, meta = (DisplayName = "Local Multiplayer Settings"))
-class SMASHUE_API UULocalMultiplayerSettings : public UDeveloperSettings
+class SMASHUE_API ULocalMultiplayerSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 
