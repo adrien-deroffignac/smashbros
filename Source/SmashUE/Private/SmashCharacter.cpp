@@ -2,6 +2,8 @@
 
 
 #include "SmashCharacter.h"
+
+#include "CameraWorldSubsytem.h"
 #include "SmashCharacterStateMachine.h"
 #include "EnhancedInputSubsystems.h"
 #include "SmashCharacterSettings.h"
@@ -20,6 +22,8 @@ void ASmashCharacter::BeginPlay()
 	Super::BeginPlay();
 	CreateStateMachine();
 	InitStateMachine();
+
+	GetWorld()->GetSubsystem<UCameraWorldSubsytem>()->AddFollowActor(this);
 }
 
 // Called every frame
@@ -119,6 +123,16 @@ void ASmashCharacter::BindInputMoveXAxisAndActions(UEnhancedInputComponent* Enha
 void ASmashCharacter::OnInputMoveX(const FInputActionValue& InputActionValue)
 {
 	InputMoveX = InputActionValue.Get<float>();
+}
+
+bool ASmashCharacter::IsFollowable()
+{
+	return true;
+}
+
+FVector ASmashCharacter::GetFollowPosition()
+{
+	return GetActorLocation();
 }
 
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CameraFollowTarget.h"
 #include "SmashCharacterSettings.h"
 #include "GameFramework/Character.h"
 #include "InputMappingContext.h"
@@ -13,7 +14,8 @@ class USmashCharacterInputData;
 class UEnhancedInputComponent;
 
 UCLASS()
-class SMASHUE_API ASmashCharacter : public ACharacter
+class SMASHUE_API ASmashCharacter : public ACharacter,
+									public ICameraFollowTarget
 {
 	GENERATED_BODY()
 #pragma region Unreal Default
@@ -96,4 +98,12 @@ private:
 	void OnInputMoveX(const FInputActionValue& InputActionValue);
 	
 #pragma endregion Input Move X
+
+
+#pragma region Camera Target
+
+	virtual bool IsFollowable() override;
+	
+	virtual FVector GetFollowPosition() override;
+#pragma endregion
 };
