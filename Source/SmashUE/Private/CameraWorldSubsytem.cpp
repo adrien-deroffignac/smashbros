@@ -69,15 +69,17 @@ void UCameraWorldSubsytem::TickUpdateCameraZoom(float DeltaTime)
 		GreatestDistanceBetweenTargets
 	);
 
+
 	float TargetCameraY = FMath::Lerp(CameraZoomYMin, CameraZoomYMax, ZoomPercent);
 	FVector CurrentLocation = CameraMain->GetComponentLocation();
 
 	float SizeDamping = CameraSettings->SizeDampingFactor;
 	float SmoothedY = FMath::Lerp(CurrentLocation.Y, TargetCameraY, FMath::Clamp(DeltaTime * SizeDamping, 0.0f, 1.0f));
-
+	
 	CurrentLocation.Y = SmoothedY;
 	CameraMain->SetWorldLocation(CurrentLocation);
 }
+
 
 
 FVector UCameraWorldSubsytem::CalculateAveragePositionsBetweenTargets()
@@ -220,13 +222,13 @@ void UCameraWorldSubsytem::InitCameraZoomParameters()
 	CameraZoomYMin = 0.f;
 	CameraZoomYMax = 0.f;
 
-	UCameraComponent* MinActor = FindCameraByTag("CameraDistanceMin");
+	UCameraComponent* MinActor = FindCameraByTag(CameraSettings->CameraDistanceMinTag);
 	if (MinActor)
 	{
 		CameraZoomYMin = MinActor->GetComponentLocation().Y;
 	}
 
-	UCameraComponent* MaxActor = FindCameraByTag("CameraDistanceMax");
+	UCameraComponent* MaxActor = FindCameraByTag(CameraSettings->CameraDistanceMaxTag);
 	if (MaxActor)
 	{
 		CameraZoomYMax = MaxActor->GetComponentLocation().Y;
