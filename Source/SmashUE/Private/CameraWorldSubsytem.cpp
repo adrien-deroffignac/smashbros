@@ -6,6 +6,8 @@
 #include "CameraFollowTarget.h"
 #include "Kismet/GameplayStatics.h"
 
+
+
 void UCameraWorldSubsytem::PostInitialize()
 {
 	Super::PostInitialize();
@@ -20,11 +22,14 @@ void UCameraWorldSubsytem::OnWorldBeginPlay(UWorld& InWorld)
 	{
 		InitCameraBounds(CameraBoundsActor);
 	}
+
+	InitCameraZoomParameters();
 }
 
 void UCameraWorldSubsytem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TickUpdateCameraZoom(DeltaTime); 
 	TickUpdateCameraPosition(DeltaTime);
 }
 
@@ -49,6 +54,15 @@ void UCameraWorldSubsytem::TickUpdateCameraPosition(float DeltaTime)
 	
 }
 
+void UCameraWorldSubsytem::TickUpdateCameraZoom(float DeltaTime)
+{
+	if (CameraMain == nullptr) return;
+	float GreatestDistanceBetweenTargets = CalculateGreatestDistanceBetweenTargets();
+
+	MathF::
+	
+}
+
 FVector UCameraWorldSubsytem::CalculateAveragePositionsBetweenTargets()
 {
     FVector AveragePosition = FVector::ZeroVector;
@@ -61,6 +75,10 @@ FVector UCameraWorldSubsytem::CalculateAveragePositionsBetweenTargets()
     }
     AveragePosition /= FollowTargets.Num();
     return AveragePosition;
+}
+
+float UCameraWorldSubsytem::CalculateGreatestDistanceBetweenTargets()
+{
 }
 
 UCameraComponent* UCameraWorldSubsytem::FindCameraByTag(const FName& Tag) const
@@ -82,7 +100,12 @@ AActor* UCameraWorldSubsytem::FindCameraBoundsActor()
 {
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TEXT("CameraBounds"), FoundActors);
-	return FoundActors.Num() > 0 ? FoundActors[0] : nullptr;
+
+	if(FoundActors.Num() > 0)
+	{
+		return FoundActors[0];
+	}
+	return nullptr;
 }
 
 void UCameraWorldSubsytem::InitCameraBounds(AActor* CameraBoundsActor)
@@ -153,6 +176,26 @@ FVector UCameraWorldSubsytem::CalculateWorldPositionFromViewportPosition(const F
 	WorldPosition += CameraWorldProjectDir * YDistanceToCenter;
 
 	return WorldPosition;
+}
+
+void UCameraWorldSubsytem::InitCameraZoomParameters()
+{
+	
+	CameraZoomYMin = 0.f;
+	CameraZoomYMax = 0.f;
+
+	UCameraComponent* MinActor = FindCameraByTag("CameraDistanceMin");
+	if (MinActor)
+	{
+		CameraZoomYMin = MinActor->GetComponentLocation().Y;
+	}
+
+	UCameraComponent* MaxActor = FindCameraByTag("CameraDistanceMax");
+	if (MaxActor)
+	{
+		CameraZoomYMax = MaxActor->GetComponentLocation().Y;
+	}
+	
 }
 
 

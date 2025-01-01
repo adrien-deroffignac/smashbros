@@ -25,24 +25,35 @@ public:
 #pragma endregion Subsystem Override
 	
 #pragma region Main Camera
-	void AddFollowActor (UObject* FollowTarget);
-
-	void RemoveFollowTarget(UObject* FollowTarget);
 
 protected:
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> CameraMain;
+
+	void TickUpdateCameraPosition(float DeltaTime);
+
+	void TickUpdateCameraZoom(float DeltaTime);
+
+	
 #pragma endregion Main Camera
 	
 #pragma region FollowTargets	
-	UPROPERTY()
-	TArray<UObject*> FollowTargets;
+public:
+	void AddFollowActor (UObject* FollowTarget);
 
-	void TickUpdateCameraPosition(float DeltaTime);
+	void RemoveFollowTarget(UObject* FollowTarget);
+	
+protected:
+	UPROPERTY()
+	TArray<UObject*> FollowTargets
+	
+	FVector CalculateAveragePositionsBetweenTargets();
+
+	float CalculateGreatestDistanceBetweenTargets();
+	
 #pragma endregion FollowTargets
 
 #pragma region Misc
-	FVector CalculateAveragePositionsBetweenTargets();
 
 	UCameraComponent* FindCameraByTag(const FName& Tag) const;
 #pragma endregion Misc
@@ -69,6 +80,25 @@ protected:
 	FVector CalculateWorldPositionFromViewportPosition(const FVector2D& ViewportPosition);
 	
 #pragma endregion Bounds
+
+#pragma region Zoom
+protected:
+	UPROPERTY()
+	float CameraZoomYMin = 0.f;
+
+	UPROPERTY()
+	float CameraZoomYMax = 0.f;
+
+	UPROPERTY()
+	float CameraZoomDistanceBetweenTargetsMin = 300.f;
+
+	UPROPERTY()
+	float CameraZoomDistanceBetweenTargetsMax = 1500.f;
+
+	UFUNCTION()
+	void InitCameraZoomParameters();
+
+#pragma endregion Zoom
 	
 };
 
