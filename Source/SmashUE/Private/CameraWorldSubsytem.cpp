@@ -56,11 +56,21 @@ void UCameraWorldSubsytem::TickUpdateCameraPosition(float DeltaTime)
 
 void UCameraWorldSubsytem::TickUpdateCameraZoom(float DeltaTime)
 {
-	if (CameraMain == nullptr) return;
+	if (CameraMain == nullptr || FollowTargets.Num() < 2) return;
 	float GreatestDistanceBetweenTargets = CalculateGreatestDistanceBetweenTargets();
 
-	MathF::
-	
+	float ZoomPercent = FMath::GetMappedRangeValueClamped(
+		FVector2D(CameraZoomDistanceBetweenTargetsMin, CameraZoomDistanceBetweenTargetsMax),
+		FVector2D(0.f, 1.f),
+		GreatestDistanceBetweenTargets
+	);
+
+	float TargetCameraY = FMath::Lerp(CameraZoomYMin, CameraZoomYMax, ZoomPercent);
+
+	FVector CurrentLocation = CameraMain->GetComponentLocation();
+	CurrentLocation.Y = FMath::FInterpTo(CurrentLocation.Y, TargetCameraY, DeltaTime, 1.f);
+
+	CameraMain->SetWorldLocation(CurrentLocation)
 }
 
 FVector UCameraWorldSubsytem::CalculateAveragePositionsBetweenTargets()
@@ -79,6 +89,25 @@ FVector UCameraWorldSubsytem::CalculateAveragePositionsBetweenTargets()
 
 float UCameraWorldSubsytem::CalculateGreatestDistanceBetweenTargets()
 {
+	float GreatestDistance = 0.f;
+	for(int i = 0; i < FollowTargets.Num(); i++)
+	{
+		if(ICameraFollowTarget* CameraFollowTarget = Cast<ICameraFollowTarget>(FollowTargets[i]))
+		{
+			for(int j = i + 1; j < FollowTargets.Num(); j++)
+			{
+				if(ICameraFollowTarget* CameraFollowTarget2 = Cast<ICameraFollowTarget>(FollowTargets[j]))
+				{
+					float Distance = FVector::Dist(CameraFollowTarget->GetFollowPosition(), CameraFollowTarget2->GetFollowPosition());
+					if(Distance > GreatestDistance)
+					{
+						GreatestDistance = Distance;
+					}
+				}
+			}
+		}
+	}
+	return GreatestDistance;
 }
 
 UCameraComponent* UCameraWorldSubsytem::FindCameraByTag(const FName& Tag) const
