@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CameraWorldSubsytem.generated.h"
+#include "CameraSettings.h"
 #include "Camera/CameraComponent.h"
+#include "CameraWorldSubsytem.generated.h"
 
 /**
  * 
@@ -45,7 +46,7 @@ public:
 	
 protected:
 	UPROPERTY()
-	TArray<UObject*> FollowTargets
+	TArray<UObject*> FollowTargets;
 	
 	FVector CalculateAveragePositionsBetweenTargets();
 
@@ -99,7 +100,12 @@ protected:
 	void InitCameraZoomParameters();
 
 #pragma endregion Zoom
-	
+private:
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	UCameraSettings* CameraSettings;
+
+protected:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 };
 
 
