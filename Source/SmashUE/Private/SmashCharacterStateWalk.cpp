@@ -62,3 +62,8 @@ void USmashCharacterStateWalk::StateTick(float DeltaTime)
 	}
 }
 
+void USmashCharacterStateWalk::OnInputMoveXFast(float InputMoveX)
+{
+	StateMachine->ChangeState(ESmashCharacterStateID::Run);
+}
+

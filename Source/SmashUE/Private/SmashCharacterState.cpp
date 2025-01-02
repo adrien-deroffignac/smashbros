@@ -22,12 +22,7 @@ void USmashCharacterState::StateInit(USmashCharacterStateMachine* InStateMachine
 {
 	StateMachine = InStateMachine;
 	Character= InStateMachine->GetCharacter();
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Red,
-		FString::Printf(TEXT("Init State %d"), GetStateID())
-		);
+	CharacterSettings = GetDefault<USmashCharacterSettings>();
 }
 
 void USmashCharacterState::StateEnter(ESmashCharacterStateID PreviousStateID)
