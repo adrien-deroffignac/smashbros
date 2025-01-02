@@ -58,5 +58,5 @@ public:
 	FLocalMultiplayerProfileData GamepadProfileData;
 
 	UPROPERTY(Config, EditAnywhere, Category = "LocalMultiplayer")
-	int NbMaxGamePads = 4;
+	int NbMaxGamepads = 4;
 };

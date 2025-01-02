@@ -29,9 +29,17 @@ public:
 
 	void AssignGamepadInputMapping(int PlayerIndex, ELocalMultiplayerInputMappingType MappingType) const;
 
+public:
+	ELocalMultiplayerInputMappingType GetCurrentInputMappingType() const;
+	void SetCurrentInputMappingType(const ELocalMultiplayerInputMappingType NewType);
+
+	int8 GetLastAssignedPlayerIndex() const;
 protected:
 	UPROPERTY()
-	uint8 LastAssignedPlayerIndex = 0;
+	ELocalMultiplayerInputMappingType CurrentInputMappingType;
+	
+	UPROPERTY()
+	int8 LastAssignedPlayerIndex = -1;
 
 	UPROPERTY()
 	TMap<int, int> PlayerIndexFromKeyboardProfileIndex;
