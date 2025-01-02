@@ -33,7 +33,7 @@ private:
 
 	UInputMappingContext* LoadInputMappingContextFromConfig();
 
-	
+	void CreateAndInitPlayers() const;
 
 	
 	void FindPlayerStartActorsInArena(TArray<AArenaPlayerStart*> &ResultsActors);

@@ -22,7 +22,7 @@ void USmashCharacterStateRun::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	
 	
 }
 

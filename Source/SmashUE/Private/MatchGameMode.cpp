@@ -4,6 +4,7 @@
 #include "MatchGameMode.h"
 
 #include "ArenaSettings.h"
+#include "LocalMultiplayerSubsystem.h"
 #include "SmashCharacter.h"
 #include "Arena/ArenaPlayerStart.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,6 +22,17 @@ UInputMappingContext* AMatchGameMode::LoadInputMappingContextFromConfig()
 	const USmashCharacterSettings* CharacterSettings = GetDefault<USmashCharacterSettings>();
 	if(CharacterSettings == nullptr) return nullptr;
 	return CharacterSettings->InputMappingContext.LoadSynchronous();
+}
+
+void AMatchGameMode::CreateAndInitPlayers() const
+{
+	UGameInstance * GameInstance = GetWorld()->GetGameInstance();
+	if (GameInstance == nullptr) return;
+
+	ULocalMultiplayerSubsystem* LocalMultiplayerSubsystem = GameInstance->GetSubsystem<ULocalMultiplayerSubsystem>();
+	if (LocalMultiplayerSubsystem == nullptr) return;
+
+	LocalMultiplayerSubsystem->CreateAndInitPlayers(ELocalMultiplayerInputMappingType::InGame);
 }
 
 void AMatchGameMode::FindPlayerStartActorsInArena(TArray<AArenaPlayerStart*> &ResultsActors)
@@ -92,7 +104,7 @@ void AMatchGameMode::SpawnCharacters(const TArray<AArenaPlayerStart*>& SpawnPoin
 void AMatchGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
+	CreateAndInitPlayers();
 	TArray<AArenaPlayerStart*> PlayerStartsPoints;
 	FindPlayerStartActorsInArena(PlayerStartsPoints);
 	SpawnCharacters(PlayerStartsPoints);
