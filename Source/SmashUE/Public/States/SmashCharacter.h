@@ -85,12 +85,18 @@ protected:
 #pragma region Input Move X
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveXEvent, float, InputMoveX);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJump);
 	
 public:
 	float GetInputMoveX() const;
 
 	UPROPERTY()
 	FInputMoveXEvent InputMoveXFastEvent;
+	
+	FOnJump JumpEvent;
+
+	bool hasDoubleJumped = false;
 
 protected:
 	UPROPERTY()
@@ -102,7 +108,9 @@ private:
 	void OnInputMoveX(const FInputActionValue& InputActionValue);
 	
 	void OnInputMoveXFast(const FInputActionValue& InputActionValue);
-	
+
+	void OnJump();
+
 #pragma endregion Input Move X
 
 

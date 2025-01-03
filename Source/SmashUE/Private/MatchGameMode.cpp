@@ -5,7 +5,7 @@
 
 #include "ArenaSettings.h"
 #include "LocalMultiplayerSubsystem.h"
-#include "SmashCharacter.h"
+#include "States/SmashCharacter.h"
 #include "Arena/ArenaPlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 

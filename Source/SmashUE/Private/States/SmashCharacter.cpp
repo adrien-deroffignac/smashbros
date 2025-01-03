@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SmashCharacter.h"
+#include "States/SmashCharacter.h"
 
 #include "CameraWorldSubsytem.h"
-#include "SmashCharacterStateMachine.h"
+#include "States/SmashCharacterStateMachine.h"
 #include "EnhancedInputSubsystems.h"
 #include "SmashCharacterSettings.h"
 #include "EnhancedInputComponent.h"
@@ -127,6 +127,17 @@ void ASmashCharacter::BindInputMoveXAxisAndActions(UEnhancedInputComponent* Enha
 			this,
 			&ASmashCharacter::OnInputMoveXFast);
 	}
+	
+	if (InputData->InputActionJump)
+	{
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionJump,
+			ETriggerEvent::Started,
+			this,
+			&ASmashCharacter::OnJump);
+	}
+
+	
 }
 
 void ASmashCharacter::OnInputMoveX(const FInputActionValue& InputActionValue)
@@ -138,6 +149,12 @@ void ASmashCharacter::OnInputMoveXFast(const FInputActionValue& InputActionValue
 {
 	InputMoveX = InputActionValue.Get<float>();
 	InputMoveXFastEvent.Broadcast(InputMoveX);
+}
+
+
+void ASmashCharacter::OnJump()
+{
+	JumpEvent.Broadcast();
 }
 
 bool ASmashCharacter::IsFollowable()
@@ -158,3 +175,4 @@ void ASmashCharacter::RotateMeshUsingOrientX() const
 	Rotation.Yaw = -90.f * OrientX;
 	GetMesh()->SetRelativeRotation(Rotation);
 }
+

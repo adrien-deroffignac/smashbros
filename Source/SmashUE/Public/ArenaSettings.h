@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SmashCharacter.h"
+#include "States/SmashCharacter.h"
 #include "Engine/DeveloperSettings.h"
 #include "ArenaSettings.generated.h"
 
