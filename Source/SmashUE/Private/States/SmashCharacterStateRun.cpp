@@ -43,6 +43,8 @@ void USmashCharacterStateRun::StateEnter(ESmashCharacterStateID PreviousStateID)
 	Super::StateEnter(PreviousStateID);
 	Character->PlayAnimMontage(RunAnim);
 	Character->JumpEvent.AddDynamic(this, &USmashCharacterStateRun::OnJump);
+	Character->AttackEvent.AddDynamic(this, &USmashCharacterStateRun::OnAttack);
+
 
 }
 
@@ -51,6 +53,8 @@ void USmashCharacterStateRun::StateExit(ESmashCharacterStateID NextStateID)
 	Super::StateExit(NextStateID);
 	Character->AddMovementInput(FVector::ForwardVector, 0.0f);
 	Character->JumpEvent.RemoveDynamic(this, &USmashCharacterStateRun::OnJump);
+	Character->AttackEvent.RemoveDynamic(this, &USmashCharacterStateRun::OnAttack);
+
 
 }
 
@@ -79,6 +83,9 @@ void USmashCharacterStateRun::OnJump()
 	StateMachine->ChangeState(ESmashCharacterStateID::Jump);
 }
 
-
+void USmashCharacterStateRun::OnAttack()
+{
+	StateMachine->ChangeState(ESmashCharacterStateID::Attack);
+}
 
 

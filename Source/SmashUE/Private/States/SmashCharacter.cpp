@@ -209,12 +209,26 @@ float ASmashCharacter::GetCurrentPercentage()
 	return CurrentPercentage;
 }
 
+void ASmashCharacter::ApplyKnockback(const FVector& Direction, float BaseForce)
+{
+	
+	float KnockbackForce = BaseForce + (CurrentPercentage * KnockbackMultiplier);
+	
+	FVector Impulse = Direction.GetSafeNormal() * KnockbackForce;
+	LaunchCharacter(Impulse, true, true);
+	
+}
+
+
 void ASmashCharacter::OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ASmashCharacter* TargetCharacter = Cast<ASmashCharacter>(OtherActor);
 	if(TargetCharacter == nullptr) return;
 	TargetCharacter->AddPercentage(AttackDamage);
+	TargetCharacter->SetOrientX(TargetCharacter->GetInputMoveX());
+	TargetCharacter->PlayAnimMontage(HitAnim);
+	TargetCharacter->ApplyKnockback(GetActorForwardVector(), 800.0f);
 	
 }
 

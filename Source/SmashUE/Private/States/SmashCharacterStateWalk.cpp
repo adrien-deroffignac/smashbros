@@ -82,5 +82,7 @@ void USmashCharacterStateWalk::OnJump()
 
 void USmashCharacterStateWalk::OnAttack()
 {
+	StateMachine->ChangeState(ESmashCharacterStateID::Attack);
+
 }
 

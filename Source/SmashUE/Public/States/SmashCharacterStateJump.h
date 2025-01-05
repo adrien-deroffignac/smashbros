@@ -52,8 +52,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> JumpAnim;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAnimMontage> DoubleJumpAnim;
+	
 };
  

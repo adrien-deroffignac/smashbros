@@ -140,6 +140,8 @@ protected:
 
 	UFUNCTION()
 	void OnAttackInput();
+	
+
 
 public:
 	FOnAttack AttackEvent;
@@ -148,6 +150,7 @@ public:
 	float AttackDamage = 0.0f;
 	bool bInAir;
 
+	
 	UFUNCTION()
 	void OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
     									  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
@@ -160,6 +163,19 @@ public:
 private:
 	float CurrentPercentage = 0.0f;
 #pragma endregion Attack
+
+#pragma region Knockback
+public:
+	void ApplyKnockback(const FVector& Direction, float BaseForce);
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> HitAnim;
+protected:
+	UPROPERTY(EditAnywhere)
+	float KnockbackMultiplier = 0.5f;
+
+
+#pragma endregion Knockback
 
 #pragma region Camera Target
 

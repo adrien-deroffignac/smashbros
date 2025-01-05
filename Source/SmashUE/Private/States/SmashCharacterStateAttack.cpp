@@ -35,7 +35,7 @@ void USmashCharacterStateAttack::StateTick(float DeltaTime)
 
     ElapsedTime += DeltaTime;
 
-    if (ElapsedTime >= AttackDuration + 0.1f)
+    if (ElapsedTime >= AttackDuration)
     {
         StateMachine->ChangeState(ESmashCharacterStateID::Idle);
     }
