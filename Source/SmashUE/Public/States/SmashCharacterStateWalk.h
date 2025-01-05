@@ -39,6 +39,9 @@ public:
 	UFUNCTION()
 	void OnJump();
 
+	UFUNCTION()
+	void OnAttack();
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> WalkAnim;

@@ -7,6 +7,7 @@
 #include "SmashCharacterSettings.h"
 #include "GameFramework/Character.h"
 #include "InputMappingContext.h"
+#include "Components/SphereComponent.h"
 #include "SmashCharacter.generated.h"
 
 class USmashCharacterStateMachine;
@@ -36,17 +37,19 @@ public:
 #pragma endregion Unreal Default
 
 #pragma region Orient
-public:
 	float GetOrientX() const;
 
 	void SetOrientX(float Value);
+	void AddPercentage(int Percentage);
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	float OrientX = 1.f;
 
 	void RotateMeshUsingOrientX() const;
-
+	
+	
+	
 #pragma endregion Orient
 
 #pragma region State Machine
@@ -86,17 +89,12 @@ protected:
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveXEvent, float, InputMoveX);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJump);
 	
 public:
 	float GetInputMoveX() const;
 
 	UPROPERTY()
 	FInputMoveXEvent InputMoveXFastEvent;
-	
-	FOnJump JumpEvent;
-
-	bool hasDoubleJumped = false;
 
 protected:
 	UPROPERTY()
@@ -109,10 +107,59 @@ private:
 	
 	void OnInputMoveXFast(const FInputActionValue& InputActionValue);
 
-	void OnJump();
 
 #pragma endregion Input Move X
+	
+#pragma region Input Move Y
+public:
+	float GetInputMoveY() const;
+private:
+	void OnInputMoveY(const FInputActionValue& InputActionValue);
+		
+protected:
+	UPROPERTY()
+	float InputMoveY = 0.f;
+	
+#pragma endregion Input Move Y
+	
+#pragma region Jump
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJump);
 
+	UFUNCTION()
+	void OnJump();
+public:	
+	FOnJump JumpEvent;
+	
+	bool bDoubleJumped = false;
+	
+#pragma endregion Jump
+
+#pragma region Attack
+protected:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttack);
+
+	UFUNCTION()
+	void OnAttackInput();
+
+public:
+	FOnAttack AttackEvent;
+
+	float GetCurrentPercentage();
+	float AttackDamage = 0.0f;
+	bool bInAir;
+
+	UFUNCTION()
+	void OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+    									  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
+    									  bool bFromSweep, const FHitResult& SweepResult);
+    	
+	UPROPERTY(EditAnywhere)
+	USphereComponent* AttackHitbox;
+
+
+private:
+	float CurrentPercentage = 0.0f;
+#pragma endregion Attack
 
 #pragma region Camera Target
 
@@ -121,3 +168,4 @@ private:
 	virtual FVector GetFollowPosition() override;
 #pragma endregion
 };
+

@@ -50,6 +50,7 @@ void USmashCharacterStateIdle::StateEnter(ESmashCharacterStateID PreviousStateID
 
 	Character->InputMoveXFastEvent.AddDynamic(this, &USmashCharacterStateIdle::OnInputMoveXFast);
 	Character->JumpEvent.AddDynamic(this, &USmashCharacterStateIdle::OnJump);
+	Character->AttackEvent.AddDynamic(this, &USmashCharacterStateIdle::OnAttack);
 }
 
 void USmashCharacterStateIdle::StateExit(ESmashCharacterStateID NextStateID)
@@ -60,6 +61,7 @@ void USmashCharacterStateIdle::StateExit(ESmashCharacterStateID NextStateID)
 	
 	Character->InputMoveXFastEvent.RemoveDynamic(this, &USmashCharacterStateIdle::OnInputMoveXFast);
 	Character->JumpEvent.RemoveDynamic(this, &USmashCharacterStateIdle::OnJump);
+	Character->AttackEvent.RemoveDynamic(this, &USmashCharacterStateIdle::OnAttack);
 }
 
 void USmashCharacterStateIdle::StateTick(float DeltaTime)
@@ -69,6 +71,11 @@ void USmashCharacterStateIdle::StateTick(float DeltaTime)
 	if(FMath::Abs(Character->GetInputMoveX()) > 0.1f)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Walk);
+	}
+	
+	if (Character->GetVelocity().Z < 0.0f)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 	}
 }
 
@@ -80,5 +87,10 @@ void USmashCharacterStateIdle::OnInputMoveXFast(float InputMoveX)
 void USmashCharacterStateIdle::OnJump()
 {
 	StateMachine->ChangeState(ESmashCharacterStateID::Jump);
+}
+
+void USmashCharacterStateIdle::OnAttack()
+{
+	StateMachine->ChangeState(ESmashCharacterStateID::Attack);
 }
 

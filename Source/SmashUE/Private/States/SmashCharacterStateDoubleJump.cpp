@@ -3,6 +3,7 @@
 
 #include "States/SmashCharacterStateDoubleJump.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "States/SmashCharacter.h"
 #include "States/SmashCharacterStateMachine.h"
 
@@ -30,17 +31,31 @@ ESmashCharacterStateID USmashCharacterStateDoubleJump::GetStateID()
 void USmashCharacterStateDoubleJump::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-
-	Character->hasDoubleJumped = true;
+	
 	ElapsedTime = 0.0f;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("DoubleJump"));
+	Character->bDoubleJumped = true;
+
 	Character->PlayAnimMontage(DoubleJumpAnim);
-	Character->LaunchCharacter(FVector(0.0f, 0.0f, DoubleJumpMaxHeight), false, true);
+	
+	Character->GetCharacterMovement()->StopActiveMovement();
+	if (Character->GetOrientX() > 0.0f)
+	{
+		Character->LaunchCharacter(FVector(1.0f, 0.0f, DoubleJumpMaxHeight), false, true);
+	}
+	else if (Character->GetOrientX() < 0.0f)
+	{
+		Character->LaunchCharacter(FVector(-1.0f, 0.0f, DoubleJumpMaxHeight), false, true);
+	}
+	else
+	{
+		Character->LaunchCharacter(FVector(0.0f, 1.0f, DoubleJumpMaxHeight), false, true);
+	}
 }
 
 void USmashCharacterStateDoubleJump::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
-	Character->StopAnimMontage(DoubleJumpAnim);
 }
 
 void USmashCharacterStateDoubleJump::StateTick(float DeltaTime)
@@ -49,12 +64,12 @@ void USmashCharacterStateDoubleJump::StateTick(float DeltaTime)
 	ElapsedTime += DeltaTime;
 	
 	
-	if (ElapsedTime >= DoubleJumpDuration || Character->GetVelocity().Z <= 0.0f)
+	if (ElapsedTime >= DoubleJumpDuration || Character->GetVelocity().Z < 0.0f)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
-	}else
-	{
-		Character->AddMovementInput(FVector::ForwardVector, Character->GetOrientX());
 	}
+	
+	Character->AddMovementInput(FVector::ForwardVector, Character->GetOrientX());
+	
 }
 

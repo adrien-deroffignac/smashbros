@@ -7,6 +7,7 @@
 #include "LocalMultiplayerSubsystem.h"
 #include "States/SmashCharacter.h"
 #include "Arena/ArenaPlayerStart.h"
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -104,8 +105,35 @@ void AMatchGameMode::SpawnCharacters(const TArray<AArenaPlayerStart*>& SpawnPoin
 void AMatchGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (MatchWidgetClass)
+	{
+		MatchWidget = CreateWidget<UMatchWidget>(GetWorld(), MatchWidgetClass);
+		if (MatchWidget)
+		{
+			MatchWidget->AddToViewport();
+		}
+	}
+
 	CreateAndInitPlayers();
 	TArray<AArenaPlayerStart*> PlayerStartsPoints;
 	FindPlayerStartActorsInArena(PlayerStartsPoints);
 	SpawnCharacters(PlayerStartsPoints);
+}
+
+
+void AMatchGameMode::UpdateWidgetPercentages()
+{
+	if (!MatchWidget) return;
+
+	TArray<int> Percentages;
+	for (ASmashCharacter* Character : CharactersInsideArena)
+	{
+		if (Character)
+		{
+			Percentages.Add(Character->GetCurrentPercentage());
+		}
+	}
+
+	MatchWidget->UpdatePercentages(Percentages);
 }

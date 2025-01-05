@@ -25,5 +25,11 @@ public:
 	TObjectPtr<UInputAction> InputActionMoveXFast;
 
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInputAction> InputActionMoveY;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UInputAction> InputActionJump;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInputAction> InputActionAttack;
 };

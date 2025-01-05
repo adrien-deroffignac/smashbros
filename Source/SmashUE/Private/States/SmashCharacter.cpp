@@ -8,12 +8,19 @@
 #include "EnhancedInputSubsystems.h"
 #include "SmashCharacterSettings.h"
 #include "EnhancedInputComponent.h"
+#include "MatchGameMode.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ASmashCharacter::ASmashCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	bInAir = false;
+	AttackHitbox = CreateDefaultSubobject<USphereComponent>(TEXT("AttackHitbox"));
+	AttackHitbox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AttackHitbox->SetupAttachment(GetMesh());
 }
 
 // Called when the game starts or when spawned
@@ -23,6 +30,9 @@ void ASmashCharacter::BeginPlay()
 	CreateStateMachine();
 	InitStateMachine();
 
+	AttackHitbox->OnComponentBeginOverlap.AddDynamic(this, &ASmashCharacter::OnHitboxOverlap);
+
+	
 	GetWorld()->GetSubsystem<UCameraWorldSubsytem>()->AddFollowActor(this);
 }
 
@@ -137,6 +147,33 @@ void ASmashCharacter::BindInputMoveXAxisAndActions(UEnhancedInputComponent* Enha
 			&ASmashCharacter::OnJump);
 	}
 
+	if (InputData->InputActionAttack)
+	{
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionAttack,
+				ETriggerEvent::Started,
+			this,
+			&ASmashCharacter::OnAttackInput);
+	}
+
+	if (InputData->InputActionMoveY)
+	{
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Started,
+			this,
+			&ASmashCharacter::OnInputMoveY);
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Triggered,
+			this,
+			&ASmashCharacter::OnInputMoveY);
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Completed,
+			this,
+			&ASmashCharacter::OnInputMoveY);
+	}
 	
 }
 
@@ -151,11 +188,41 @@ void ASmashCharacter::OnInputMoveXFast(const FInputActionValue& InputActionValue
 	InputMoveXFastEvent.Broadcast(InputMoveX);
 }
 
+float ASmashCharacter::GetInputMoveY() const
+{
+	return InputMoveY;
+}
+
+void ASmashCharacter::OnInputMoveY(const FInputActionValue& InputActionValue)
+{
+	InputMoveY = InputActionValue.Get<float>();
+}
+
+
+void ASmashCharacter::OnAttackInput()
+{
+	AttackEvent.Broadcast();
+}
+
+float ASmashCharacter::GetCurrentPercentage()
+{
+	return CurrentPercentage;
+}
+
+void ASmashCharacter::OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ASmashCharacter* TargetCharacter = Cast<ASmashCharacter>(OtherActor);
+	if(TargetCharacter == nullptr) return;
+	TargetCharacter->AddPercentage(AttackDamage);
+	
+}
 
 void ASmashCharacter::OnJump()
 {
 	JumpEvent.Broadcast();
 }
+
 
 bool ASmashCharacter::IsFollowable()
 {
@@ -174,5 +241,16 @@ void ASmashCharacter::RotateMeshUsingOrientX() const
 	FRotator Rotation = GetMesh()->GetComponentRotation();
 	Rotation.Yaw = -90.f * OrientX;
 	GetMesh()->SetRelativeRotation(Rotation);
+}
+
+
+void ASmashCharacter::AddPercentage(int Percentage)
+{
+	CurrentPercentage += Percentage;
+	AMatchGameMode* MatchGameMode = Cast<AMatchGameMode>(GetWorld()->GetAuthGameMode());
+	if (MatchGameMode)
+	{
+		MatchGameMode->UpdateWidgetPercentages();
+	}
 }
 

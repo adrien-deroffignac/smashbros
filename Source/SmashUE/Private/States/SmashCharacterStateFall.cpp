@@ -11,10 +11,13 @@ USmashCharacterStateFall::USmashCharacterStateFall()
 void USmashCharacterStateFall::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-
 	Character->PlayAnimMontage(FallAnim);
+	
 	Character->GetCharacterMovement()->GravityScale = FallGravityScale;
+	Character->GetCharacterMovement()->AirControl = FallAirControl;
+	
 	Character->JumpEvent.AddDynamic(this, &USmashCharacterStateFall::DoubleJump);
+	Character->AttackEvent.AddDynamic(this, &USmashCharacterStateFall::OnAttack);
 
 }
 
@@ -22,17 +25,24 @@ void USmashCharacterStateFall::StateEnter(ESmashCharacterStateID PreviousStateID
 void USmashCharacterStateFall::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
-
-	Character->StopAnimMontage(FallAnim);
+	
 	Character->GetCharacterMovement()->GravityScale = 1.0f;
 	Character->JumpEvent.RemoveDynamic(this, &USmashCharacterStateFall::DoubleJump);
-
+	Character->AttackEvent.RemoveDynamic(this, &USmashCharacterStateFall::OnAttack);
+	Character->GetCharacterMovement()->AirControl = 1.0f;
+	Character->SetOrientX(Character->GetInputMoveX());
 }
 
 void USmashCharacterStateFall::DoubleJump()
 {
-	if (Character->hasDoubleJumped) return;
+	if (Character->bDoubleJumped) return;
 	StateMachine->ChangeState(ESmashCharacterStateID::DoubleJump);
+}
+
+void USmashCharacterStateFall::OnAttack()
+{
+	Character->bInAir = true;
+	StateMachine->ChangeState(ESmashCharacterStateID::Attack);
 }
 
 void USmashCharacterStateFall::StateTick(float DeltaTime)
@@ -46,7 +56,8 @@ void USmashCharacterStateFall::CheckLanding()
 {
 	if (!Character->GetCharacterMovement()->IsFalling())
 	{
-		Character->hasDoubleJumped = false;
+		Character->bDoubleJumped = false;
+		Character->bInAir = false;
 		if (FMath::Abs(Character->GetInputMoveX()) > CharacterSettings->InputMoveXThreshold)
 		{
 			StateMachine->ChangeState(ESmashCharacterStateID::Run);
@@ -55,10 +66,10 @@ void USmashCharacterStateFall::CheckLanding()
 		{
 			StateMachine->ChangeState(ESmashCharacterStateID::Idle);
 		}
-	}else {
-		Character->SetOrientX(Character->GetInputMoveX());
-		Character->AddMovementInput(FVector::ForwardVector, Character->GetOrientX());
 	}
+	
+	Character->SetOrientX(Character->GetInputMoveX());
+	
 }
 
 ESmashCharacterStateID USmashCharacterStateFall::GetStateID()

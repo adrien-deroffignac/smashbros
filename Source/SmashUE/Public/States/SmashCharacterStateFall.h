@@ -27,7 +27,9 @@ public:
 	
 	UFUNCTION()
 	void DoubleJump();
-	
+
+	UFUNCTION()
+	void OnAttack();
 protected:
 	UPROPERTY(EditAnywhere)
 	float FallHorizontalMoveSpeed = 400.0f;

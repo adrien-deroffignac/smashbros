@@ -14,5 +14,6 @@ enum class ESmashCharacterStateID : uint8
 	Jump,
 	Fall,
 	DoubleJump,
+	Attack,
 };
 

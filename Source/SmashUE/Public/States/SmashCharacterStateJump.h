@@ -24,6 +24,9 @@ public:
 
 	UFUNCTION()
 	void OnDoubleJump();
+
+	UFUNCTION()
+	void OnAttack();
 	
 	virtual void StateEnter(ESmashCharacterStateID PreviousStateID) override;
 

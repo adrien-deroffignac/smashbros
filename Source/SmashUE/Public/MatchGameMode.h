@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ArenaSettings.h"
 #include "GameFramework/GameModeBase.h"
+#include "UI/MatchWidget.h"
 #include "MatchGameMode.generated.h"
 
 class ASmashCharacter;
@@ -41,4 +42,13 @@ private:
 	TSubclassOf<ASmashCharacter> GetSmashCharacterClassFromInputType(EAutoReceiveInput::Type inputType) const;
 
 	void SpawnCharacters(const TArray<AArenaPlayerStart*> &SpawnPoints);
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> MatchWidgetClass;
+
+	UPROPERTY()
+	UMatchWidget* MatchWidget;
+
+public:
+	void UpdateWidgetPercentages();
 };

@@ -49,7 +49,6 @@ void USmashCharacterStateRun::StateEnter(ESmashCharacterStateID PreviousStateID)
 void USmashCharacterStateRun::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
-	Character->StopAnimMontage(RunAnim);
 	Character->AddMovementInput(FVector::ForwardVector, 0.0f);
 	Character->JumpEvent.RemoveDynamic(this, &USmashCharacterStateRun::OnJump);
 
@@ -67,6 +66,11 @@ void USmashCharacterStateRun::StateTick(float DeltaTime)
 	{
 		Character->SetOrientX(Character->GetInputMoveX());
 		Character->AddMovementInput(FVector::ForwardVector, Character->GetInputMoveX() * RunSpeed);
+	}
+
+	if (Character->GetVelocity().Z < 0.0f)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 	}
 }
 

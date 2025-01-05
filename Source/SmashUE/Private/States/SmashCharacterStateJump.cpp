@@ -1,4 +1,6 @@
 ﻿#include "States/SmashCharacterStateJump.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
 #include "States/SmashCharacter.h"
 #include "States/SmashCharacterStateMachine.h"
 
@@ -15,17 +17,31 @@ void USmashCharacterStateJump::StateEnter(ESmashCharacterStateID PreviousStateID
 	ElapsedTime = 0.0f;
 
 	Character->PlayAnimMontage(JumpAnim);
-	Character->LaunchCharacter(FVector(0.0f, 0.0f, JumpMaxHeight), false, true);
+	if (Character->GetOrientX() > 0.0f)
+	{
+		Character->LaunchCharacter(FVector(1.0f, 0.0f, JumpMaxHeight), false, true);
+	}
+	else if (Character->GetOrientX() < 0.0f)
+	{
+		Character->LaunchCharacter(FVector(-1.0f, 0.0f, JumpMaxHeight), false, true);
+	}
+	else
+	{
+		Character->LaunchCharacter(FVector(0.0f, 1.0f, JumpMaxHeight), false, true);
+	}
+	
+	Character->GetCharacterMovement()->AirControl = JumpAirControl;
+	Character->bInAir = true;
 	Character->JumpEvent.AddDynamic(this, &USmashCharacterStateJump::OnDoubleJump);
+	Character->AttackEvent.AddDynamic(this, &USmashCharacterStateJump::OnAttack);
 }
 
 void USmashCharacterStateJump::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 
-	Character->StopAnimMontage(JumpAnim);
 	Character->JumpEvent.RemoveDynamic(this, &USmashCharacterStateJump::OnDoubleJump);
-
+	Character->AttackEvent.RemoveDynamic(this, &USmashCharacterStateJump::OnAttack);
 }
 
 void USmashCharacterStateJump::StateTick(float DeltaTime)
@@ -57,6 +73,11 @@ ESmashCharacterStateID USmashCharacterStateJump::GetStateID()
 
 void USmashCharacterStateJump::OnDoubleJump()
 {
-	if (Character->hasDoubleJumped) return;
+	if (Character->bDoubleJumped) return;
 	StateMachine->ChangeState(ESmashCharacterStateID::DoubleJump);
+}
+
+void USmashCharacterStateJump::OnAttack()
+{
+	StateMachine->ChangeState(ESmashCharacterStateID::Attack);
 }
